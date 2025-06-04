@@ -196,8 +196,30 @@ jobs:
                   # End the collapsible group in the GitHub Actions log
                   echo "::endgroup::"
 
+            - name: 🔍 Check if branch is ahead of master
+              if: steps.check-tokens.outputs.needs_sync == 'true'
+              id: check-ahead
+              run: |
+                  # Start a collapsible group in the GitHub Actions log for better readability
+                  echo "::group::Checking if branch is ahead of master"
+
+                  # Check if the current branch has commits ahead of master
+                  AHEAD_COUNT=$(git rev-list --count master..$SYNC_BRANCH_NAME)
+                  echo "Branch $SYNC_BRANCH_NAME is $AHEAD_COUNT commits ahead of master"
+
+                  if [ "$AHEAD_COUNT" -gt 0 ]; then
+                    echo "Branch has commits ahead of master, should create PR"
+                    echo "branch_ahead=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "Branch is not ahead of master"
+                    echo "branch_ahead=false" >> $GITHUB_OUTPUT
+                  fi
+
+                  # End the collapsible group in the GitHub Actions log
+                  echo "::endgroup::"
+
             - name: 🔀 Create Pull Request
-              if: steps.check-tokens.outputs.needs_sync == 'true' && steps.commit-files.outputs.changes_committed == 'true'
+              if: steps.check-tokens.outputs.needs_sync == 'true' && (steps.commit-files.outputs.changes_committed == 'true' || steps.check-ahead.outputs.branch_ahead == 'true')
               id: create-pr
               continue-on-error: true # Don't fail the workflow if PR creation fails
               run: |
@@ -244,13 +266,14 @@ jobs:
                   echo "::endgroup::"
 
             - name: ✅ Report No Changes
-              if: steps.check-tokens.outputs.needs_sync == 'true' && (steps.update-tokens.outputs.tokens_updated == 'false' || steps.commit-files.outputs.changes_committed == 'false')
+              if: steps.check-tokens.outputs.needs_sync == 'true' && steps.commit-files.outputs.changes_committed == 'false' && steps.check-ahead.outputs.branch_ahead == 'false'
               run: |
                   # Start a collapsible group in the GitHub Actions log for better readability
                   echo "::group::No Changes Required"
                   echo "Design tokens are already up to date. No changes were made."
                   echo "- Tokens file was checked and found to be identical"
                   echo "- No generated files needed updating"
+                  echo "- Branch is not ahead of master"
                   echo "- No pull request was created"
                   # End the collapsible group in the GitHub Actions log
                   echo "::endgroup::"
