@@ -739,6 +739,26 @@ class ComponentDesignTokens {
   /// componentToggleHeight with value: {core.size.1200}
   static const componentToggleHeight = CoreDesignTokens.coreSize1200;
 
+  /// componentModalTitleTypographyFontFamily with value: {core.fontFamily.inter}
+  static const componentModalTitleTypographyFontFamily =
+      CoreDesignTokens.coreFontFamilyInter;
+
+  /// componentModalTitleTypographyFontSize with value: {core.fontSize.400}
+  static const componentModalTitleTypographyFontSize =
+      CoreDesignTokens.coreFontSize400;
+
+  /// componentModalTitleTypographyFontWeight with value: {core.fontWeight.extraBold}
+  static const componentModalTitleTypographyFontWeight =
+      CoreDesignTokens.coreFontWeightExtraBold;
+
+  /// componentModalTitleTypographyLineHeight with value: {core.lineHeight.600}
+  static const componentModalTitleTypographyLineHeight =
+      CoreDesignTokens.coreLineHeight600;
+
+  /// componentModalTitleTypographyParagraphSpacing with value: {core.paragraphSpacing.400}
+  static const componentModalTitleTypographyParagraphSpacing =
+      CoreDesignTokens.coreParagraphSpacing400;
+
   /// componentModalBg with value: {semantic.color.slate.solid.surface.frame.low}
   static const componentModalBgLight =
       LightThemeDesignTokens.semanticColorSlateSolidSurfaceFrameLow;
@@ -1115,6 +1135,10 @@ class ComponentDesignTokens {
   static const componentButtonLabelTypographyTertiarySmParagraphSpacing =
       CoreDesignTokens.coreParagraphSpacing50;
 
+  /// componentButtonLabelTypographyTertiarySmTextDecoration with value: {core.fontDecoration.underline}
+  static const componentButtonLabelTypographyTertiarySmTextDecoration =
+      CoreDesignTokens.coreFontDecorationUnderline;
+
   /// componentButtonLabelTypographyTertiaryMdFontFamily with value: {core.fontFamily.inter}
   static const componentButtonLabelTypographyTertiaryMdFontFamily =
       CoreDesignTokens.coreFontFamilyInter;
@@ -1134,6 +1158,10 @@ class ComponentDesignTokens {
   /// componentButtonLabelTypographyTertiaryMdParagraphSpacing with value: {core.paragraphSpacing.75}
   static const componentButtonLabelTypographyTertiaryMdParagraphSpacing =
       CoreDesignTokens.coreParagraphSpacing75;
+
+  /// componentButtonLabelTypographyTertiaryMdTextDecoration with value: {core.fontDecoration.underline}
+  static const componentButtonLabelTypographyTertiaryMdTextDecoration =
+      CoreDesignTokens.coreFontDecorationUnderline;
 
   /// componentButtonLabelTypographyTertiaryLgFontFamily with value: {core.fontFamily.inter}
   static const componentButtonLabelTypographyTertiaryLgFontFamily =
@@ -1155,6 +1183,10 @@ class ComponentDesignTokens {
   static const componentButtonLabelTypographyTertiaryLgParagraphSpacing =
       CoreDesignTokens.coreParagraphSpacing100;
 
+  /// componentButtonLabelTypographyTertiaryLgTextDecoration with value: {core.fontDecoration.underline}
+  static const componentButtonLabelTypographyTertiaryLgTextDecoration =
+      CoreDesignTokens.coreFontDecorationUnderline;
+
   /// componentButtonLabelTypographyTertiaryXlFontFamily with value: {core.fontFamily.inter}
   static const componentButtonLabelTypographyTertiaryXlFontFamily =
       CoreDesignTokens.coreFontFamilyInter;
@@ -1174,6 +1206,10 @@ class ComponentDesignTokens {
   /// componentButtonLabelTypographyTertiaryXlParagraphSpacing with value: {core.paragraphSpacing.200}
   static const componentButtonLabelTypographyTertiaryXlParagraphSpacing =
       CoreDesignTokens.coreParagraphSpacing200;
+
+  /// componentButtonLabelTypographyTertiaryXlTextDecoration with value: {core.fontDecoration.underline}
+  static const componentButtonLabelTypographyTertiaryXlTextDecoration =
+      CoreDesignTokens.coreFontDecorationUnderline;
 
   /// componentButtonLabelColorCoralPrimary with value: {core.color.solid.slate.50}
   static const componentButtonLabelColorCoralPrimary =
@@ -2462,6 +2498,26 @@ class ComponentDesignTokens {
 
   /// componentPaginationHeightButton with value: {core.size.1600}
   static const componentPaginationHeightButton = CoreDesignTokens.coreSize1600;
+
+  /// componentActionSheetTitleTypographyFontFamily with value: {core.fontFamily.inter}
+  static const componentActionSheetTitleTypographyFontFamily =
+      CoreDesignTokens.coreFontFamilyInter;
+
+  /// componentActionSheetTitleTypographyFontSize with value: {core.fontSize.300}
+  static const componentActionSheetTitleTypographyFontSize =
+      CoreDesignTokens.coreFontSize300;
+
+  /// componentActionSheetTitleTypographyFontWeight with value: {core.fontWeight.extraBold}
+  static const componentActionSheetTitleTypographyFontWeight =
+      CoreDesignTokens.coreFontWeightExtraBold;
+
+  /// componentActionSheetTitleTypographyLineHeight with value: {core.lineHeight.400}
+  static const componentActionSheetTitleTypographyLineHeight =
+      CoreDesignTokens.coreLineHeight400;
+
+  /// componentActionSheetTitleTypographyParagraphSpacing with value: {core.paragraphSpacing.300}
+  static const componentActionSheetTitleTypographyParagraphSpacing =
+      CoreDesignTokens.coreParagraphSpacing300;
 
   /// componentActionSheetBg with value: {semantic.color.slate.solid.surface.frame.low}
   static const componentActionSheetBgLight =
