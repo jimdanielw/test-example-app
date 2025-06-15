@@ -236,7 +236,9 @@ class _ChartImplementationState extends BasicChartState<MainChart> {
       maxEpoch: widget.chartDataList.getMaxEpoch(),
     );
 
-    crosshairController.series = widget.mainSeries as DataSeries<Tick>;
+    crosshairController
+      ..series = widget.mainSeries as DataSeries<Tick>
+      ..crosshairVariant = widget.crosshairVariant;
   }
 
   void _setupCrosshairController() {
@@ -257,6 +259,7 @@ class _ChartImplementationState extends BasicChartState<MainChart> {
       },
       showCrosshair: widget.showCrosshair,
       quoteFromCanvasY: chartQuoteFromCanvasY,
+      crosshairVariant: widget.crosshairVariant,
     );
   }
 

@@ -520,7 +520,7 @@ class _InteractiveLayerGestureHandlerState
 
     // Check if we're over a drawing (clickable element)
     if (widget.interactiveLayerBehaviour.hitTestDrawings(localPosition)) {
-      return SystemMouseCursors.click;
+      return SystemMouseCursors.grab;
     }
 
     if (localPosition.dx > (xAxis.graphAreaWidth ?? 0)) {

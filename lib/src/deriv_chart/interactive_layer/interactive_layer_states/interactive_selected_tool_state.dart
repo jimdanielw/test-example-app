@@ -140,9 +140,6 @@ class InteractiveSelectedToolState extends InteractiveState
 
   @override
   bool onHover(PointerHoverEvent event) {
-    if (getToolState(selected).contains(DrawingToolState.dragging)) {
-      return true;
-    }
-    return false;
+    return getToolState(selected).contains(DrawingToolState.dragging);
   }
 }

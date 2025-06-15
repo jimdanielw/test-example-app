@@ -32,6 +32,7 @@ class CrosshairArea extends StatelessWidget {
     required this.animationDuration,
     required this.crosshairVariant,
     required this.isTickWithinDataRange,
+    required this.updateAndFindClosestTick,
     this.pipSize = 4,
     Key? key,
   }) : super(key: key);
@@ -70,6 +71,13 @@ class CrosshairArea extends StatelessWidget {
   /// This is useful for distinguishing between actual data points and virtual ticks.
   final bool isTickWithinDataRange;
 
+  /// Function to update and find the closest tick based on cursor position.
+  ///
+  /// Takes an optional [double] parameter representing the cursor X position.
+  /// If no position is provided, it uses the last known long press position.
+  /// Returns the closest [Tick] to the specified or default position, or null if none found.
+  final Tick? Function([double?]) updateAndFindClosestTick;
+
   /// Calculates the optimal vertical position for the crosshair details box.
   ///
   /// In Flutter canvas, the coordinate system has (0,0) at the top-left corner,
@@ -91,9 +99,10 @@ class CrosshairArea extends StatelessWidget {
   /// Returns:
   /// The Y-coordinate (top position) where the details box should be rendered.
   /// The value is guaranteed to be at least 10 pixels from the top of the canvas.
-  double _calculateDetailsPosition({required double cursorY}) {
+  double _calculateDetailsPosition(
+      {required double cursorY, required Tick tick}) {
     // Height of the details information box in pixels
-    final double detailsBoxHeight = crosshairTick is Candle ? 100 : 50;
+    final double detailsBoxHeight = tick is Candle ? 100 : 50;
 
     // Additional vertical gap between the cursor and the details box
     // This ensures the box doesn't overlap with or crowd the cursor
@@ -108,10 +117,16 @@ class CrosshairArea extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
+      Tick? updatedCrosshairTick = crosshairTick;
+
+      if (cursorPosition.dx != 0) {
+        updatedCrosshairTick = updateAndFindClosestTick(cursorPosition.dx);
+      }
       return SizedBox(
         width: constraints.maxWidth,
         height: constraints.maxHeight,
-        child: buildCrosshairContent(context, constraints),
+        child:
+            buildCrosshairContent(context, constraints, updatedCrosshairTick),
       );
     });
   }
@@ -124,8 +139,8 @@ class CrosshairArea extends StatelessWidget {
   /// [context] The build context.
   /// [constraints] The layout constraints for the crosshair area.
   Widget buildCrosshairContent(
-      BuildContext context, BoxConstraints constraints) {
-    if (crosshairTick == null) {
+      BuildContext context, BoxConstraints constraints, Tick? tick) {
+    if (tick == null) {
       return const SizedBox.shrink();
     }
 
@@ -138,7 +153,7 @@ class CrosshairArea extends StatelessWidget {
       children: <Widget>[
         AnimatedPositioned(
           duration: animationDuration,
-          left: xAxis.xFromEpoch(crosshairTick!.epoch),
+          left: xAxis.xFromEpoch(tick.epoch),
           child: CustomPaint(
             size: Size(constraints.maxWidth, constraints.maxHeight),
             painter: crosshairVariant == CrosshairVariant.smallScreen
@@ -152,13 +167,13 @@ class CrosshairArea extends StatelessWidget {
           ),
         ),
         AnimatedPositioned(
-          top: quoteToCanvasY(crosshairTick!.quote),
-          left: xAxis.xFromEpoch(crosshairTick!.epoch),
+          top: quoteToCanvasY(tick.quote),
+          left: xAxis.xFromEpoch(tick.epoch),
           duration: animationDuration,
           child: CustomPaint(
             size: Size(1, constraints.maxHeight),
             painter: crosshairVariant == CrosshairVariant.smallScreen &&
-                    crosshairTick is! Candle
+                    tick is! Candle
                 ? CrosshairDotPainter(
                     dotColor: dotColor, dotBorderColor: dotEffect)
                 : null,
@@ -166,7 +181,7 @@ class CrosshairArea extends StatelessWidget {
         ),
         if (isTickWithinDataRange)
           _buildCrosshairTickHightlight(
-              constraints: constraints, xAxis: xAxis, theme: theme),
+              constraints: constraints, xAxis: xAxis, theme: theme, tick: tick),
         // Add crosshair quote label at the right side of the chart
         if (crosshairVariant != CrosshairVariant.smallScreen &&
             cursorPosition.dy > 0)
@@ -191,11 +206,10 @@ class CrosshairArea extends StatelessWidget {
             ),
           ),
         // Add vertical date label at the bottom of the chart
-        if (crosshairVariant != CrosshairVariant.smallScreen &&
-            crosshairTick != null)
+        if (crosshairVariant != CrosshairVariant.smallScreen)
           Positioned(
             bottom: 0,
-            left: xAxis.xFromEpoch(crosshairTick!.epoch),
+            left: xAxis.xFromEpoch(tick.epoch),
             child: FractionalTranslation(
               translation:
                   const Offset(-0.5, 0.85), // Center the label horizontally
@@ -206,8 +220,7 @@ class CrosshairArea extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  ChartDateUtils.formatDateTimeWithSeconds(
-                      crosshairTick!.epoch),
+                  ChartDateUtils.formatDateTimeWithSeconds(tick.epoch),
                   style: theme.crosshairAxisLabelStyle.copyWith(
                     color: theme.crosshairInformationBoxTextDefault,
                   ),
@@ -215,13 +228,14 @@ class CrosshairArea extends StatelessWidget {
               ),
             ),
           ),
-        if (isTickWithinDataRange) _buildCrosshairDetails(constraints, xAxis),
+        if (isTickWithinDataRange)
+          _buildCrosshairDetails(constraints, xAxis, tick),
       ],
     );
   }
 
   AnimatedPositioned _buildCrosshairDetails(
-      BoxConstraints constraints, XAxisModel xAxis) {
+      BoxConstraints constraints, XAxisModel xAxis, Tick? tick) {
     return AnimatedPositioned(
       duration: animationDuration,
       // Position the details above the cursor with a gap
@@ -229,15 +243,15 @@ class CrosshairArea extends StatelessWidget {
       // Subtract the height of the details box plus a gap
       top: crosshairVariant == CrosshairVariant.smallScreen
           ? 8
-          : _calculateDetailsPosition(cursorY: cursorPosition.dy),
+          : _calculateDetailsPosition(cursorY: cursorPosition.dy, tick: tick!),
       bottom: 0,
       width: constraints.maxWidth,
-      left: xAxis.xFromEpoch(crosshairTick!.epoch) - constraints.maxWidth / 2,
+      left: xAxis.xFromEpoch(tick!.epoch) - constraints.maxWidth / 2,
       child: Align(
         alignment: Alignment.topCenter,
         child: CrosshairDetails(
           mainSeries: mainSeries,
-          crosshairTick: crosshairTick!,
+          crosshairTick: tick,
           pipSize: pipSize,
           crosshairVariant: crosshairVariant,
         ),
@@ -266,17 +280,18 @@ class CrosshairArea extends StatelessWidget {
   Widget _buildCrosshairTickHightlight(
       {required BoxConstraints constraints,
       required XAxisModel xAxis,
-      required ChartTheme theme}) {
-    if (crosshairTick == null) {
+      required ChartTheme theme,
+      required Tick? tick}) {
+    if (tick == null) {
       return const SizedBox.shrink();
     }
 
     // Get the appropriate highlight painter for the current tick based on the series type
     final CrosshairHighlightPainter? highlightPainter =
         mainSeries.getCrosshairHighlightPainter(
-      crosshairTick!,
+      tick,
       quoteToCanvasY,
-      xAxis.xFromEpoch(crosshairTick!.epoch),
+      xAxis.xFromEpoch(tick.epoch),
       xAxis.granularity,
       xAxis.xFromEpoch,
       theme,

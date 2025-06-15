@@ -78,6 +78,8 @@ class CrosshairWidget extends StatelessWidget {
                   animationDuration: crosshairController.animationDuration,
                   crosshairVariant: crosshairVariant,
                   isTickWithinDataRange: state.isTickWithinDataRange,
+                  updateAndFindClosestTick:
+                      crosshairController.updateAndFindClosestTick,
                 ),
               ),
             );
